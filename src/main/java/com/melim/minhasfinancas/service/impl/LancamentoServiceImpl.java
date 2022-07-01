@@ -79,7 +79,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
 
 	@Override
-	public void validar(Lancamento lancamento) {
+	public void validar(Lancamento lancamento) { 
 		if(lancamento.getDescricao()==null || lancamento.getDescricao().trim().equals("")) {
 			throw new RegraNegocioException("Informe uma DESCRIÇÃO vállida.");
 		}
