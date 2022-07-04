@@ -1,7 +1,9 @@
 package com.melim.minhasfinancas.service.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -21,10 +23,11 @@ import java.util.List;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
+	@Autowired
 	private LancamentoRepository repository;
 	
 	public LancamentoServiceImpl(LancamentoRepository repository) {
-		//super();
+		super();
 		this.repository=repository;
 	}
 	
@@ -33,7 +36,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Transactional
 	public Lancamento salvar(Lancamento lancamento) {
 		validar(lancamento);
-		
+		lancamento.setStatusLancamento(StatusLancamento.PENDENTE);
 		return repository.save(lancamento);
 	}
 
@@ -81,7 +84,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	public void validar(Lancamento lancamento) { 
 		if(lancamento.getDescricao()==null || lancamento.getDescricao().trim().equals("")) {
-			throw new RegraNegocioException("Informe uma DESCRIÇÃO vállida.");
+			throw new RegraNegocioException("Informe uma DESCRIÇÃO válida.");
 		}
 		if(lancamento.getMes()==null || lancamento.getMes()<=1 || lancamento.getMes()>=12) {
 			throw new RegraNegocioException("Informe um MÊS válido.");
@@ -99,6 +102,12 @@ public class LancamentoServiceImpl implements LancamentoService {
 			throw new RegraNegocioException("Informe um TIPO de lançamento");
 		}
 		
+	}
+
+
+	@Override
+	public Optional<Lancamento> obterPorId(Integer id) {
+		return repository.findById(id);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.melim.minhasfinancas.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.melim.minhasfinancas.model.entity.Lancamento;
 import com.melim.minhasfinancas.model.enums.StatusLancamento;
@@ -17,4 +18,6 @@ public interface LancamentoService {
 	void atualizarTipo(Lancamento lancamento, TipoLancamento tipo);
 	
 	void validar(Lancamento lancamento);
+	
+	Optional<Lancamento> obterPorId(Integer id);
 }
