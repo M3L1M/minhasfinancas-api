@@ -49,7 +49,8 @@ public class LancamentoResource {
 			// de entender
 			@RequestParam(value = "descricao", required = false) String descricao,
 			@RequestParam(value = "mes", required = false) Integer mes,
-			@RequestParam(value = "ano", required = false) Integer ano, @RequestParam("usuario") Integer idUsuario) {
+			@RequestParam(value = "ano", required = false) Integer ano,
+			@RequestParam("idUsuario") Integer idUsuario) {
 
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
