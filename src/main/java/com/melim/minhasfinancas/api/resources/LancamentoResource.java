@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.melim.minhasfinancas.api.dto.LancamentoDTO;
+import com.melim.minhasfinancas.api.dto.LancamentoStatusDTO;
 import com.melim.minhasfinancas.exception.RegraNegocioException;
 import com.melim.minhasfinancas.model.entity.Lancamento;
 import com.melim.minhasfinancas.model.entity.Usuario;
@@ -100,6 +101,26 @@ public class LancamentoResource {
 		}).orElseGet(() -> new ResponseEntity("Lancamento não encontrado na Base de Dados", HttpStatus.BAD_REQUEST));
 
 	}
+	
+	@PutMapping("{id}/atualiza-status")
+	public ResponseEntity atualizaStatus(@PathVariable("id") Integer id,@RequestBody LancamentoStatusDTO dto) {
+		return service.obterPorId(id).map(entity -> {
+			System.out.println(id);
+			System.out.println(dto.getStatusLancamento());
+			StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatusLancamento());
+			if(statusSelecionado == null) {
+				return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento, envie um status válido");
+			}
+			try {
+				entity.setStatusLancamento(statusSelecionado);
+				service.atualizar(entity);
+				return ResponseEntity.ok(entity);
+			}catch (RegraNegocioException e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}).orElseGet(() -> new ResponseEntity("Lancamento não encontrato na base de Dados", HttpStatus.BAD_REQUEST));
+	}
+	
 
 	@DeleteMapping("{id}")
 	public ResponseEntity delete(@PathVariable("id") Integer id) {
@@ -114,6 +135,8 @@ public class LancamentoResource {
 		}).orElseGet(() -> new ResponseEntity("Lancamento não encontrado na Base de Dados", HttpStatus.BAD_REQUEST));
 
 	}
+	
+	
 
 	private LancamentoDTO converter(Lancamento lancamento) {
 		return LancamentoDTO.builder().id(lancamento.getId()).descricao(lancamento.getDescricao())
@@ -122,6 +145,8 @@ public class LancamentoResource {
 				.tipoLancamento(lancamento.getTipoLancamento().name()).idUsuario(lancamento.getUsuario().getId())
 				.build();
 	}
+	
+	
 
 	private Lancamento converter(LancamentoDTO dto) {
 		Lancamento lancamento = new Lancamento();

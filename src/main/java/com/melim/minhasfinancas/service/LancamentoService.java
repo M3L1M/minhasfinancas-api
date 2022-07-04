@@ -1,5 +1,6 @@
 package com.melim.minhasfinancas.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +16,10 @@ public interface LancamentoService {
 	List<Lancamento> buscar(Lancamento lancamentoFiltro);
 	
 	void atualizarStatus(Lancamento lancamento, StatusLancamento status);
-	void atualizarTipo(Lancamento lancamento, TipoLancamento tipo);
 	
 	void validar(Lancamento lancamento);
 	
 	Optional<Lancamento> obterPorId(Integer id);
+	
+	BigDecimal obterSaldoPorUsuario(Integer id);
 }

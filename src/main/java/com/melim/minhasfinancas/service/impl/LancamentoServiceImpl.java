@@ -44,7 +44,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Transactional
 	public Lancamento atualizar(Lancamento lancamento) {
 		
-		lancamento.setStatusLancamento(StatusLancamento.PENDENTE);
+		//lancamento.setStatusLancamento(StatusLancamento.PENDENTE);
 		Objects.requireNonNull(lancamento.getId());
 		validar(lancamento);
 		return repository.save(lancamento);
@@ -75,11 +75,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 		atualizar(lancamento);
 	}
 
-	@Override
-	public void atualizarTipo(Lancamento lancamento, TipoLancamento tipo) {
-		lancamento.setTipoLancamento(tipo);
-		atualizar(lancamento);
-	}
+	
 
 
 	@Override
@@ -109,6 +105,23 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	public Optional<Lancamento> obterPorId(Integer id) {
 		return repository.findById(id);
+	}
+
+
+	@Override
+	@Transactional(readOnly = true)
+	public BigDecimal obterSaldoPorUsuario(Integer id) {
+		BigDecimal receita=repository.obterSaldoPorTipoLancamentoEUsuario(id,TipoLancamento.RECEITA,StatusLancamento.EFETIVADO);
+		BigDecimal despesa=repository.obterSaldoPorTipoLancamentoEUsuario(id,TipoLancamento.DESPESA,StatusLancamento.EFETIVADO);
+		
+		if(receita==null) {
+			receita=BigDecimal.ZERO;
+		}
+		if(despesa==null) {
+			despesa=BigDecimal.ZERO;
+		}
+		
+		return receita.subtract(despesa);
 	}
 
 }
