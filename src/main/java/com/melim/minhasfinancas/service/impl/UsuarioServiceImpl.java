@@ -28,14 +28,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Usuario autenticar(String email, String senha) {
 		Optional<Usuario> usuario=repository.findByEmail(email);
-		
+		System.out.println(email+" - "+senha);
 		if(!usuario.isPresent()) {
 			throw new ErroAutenticar("Usuario não encontrado");
+		}
+		if(email.isEmpty()) {
+			throw new ErroAutenticar("Preencha o campo Usuário");
 		}
 		if(!usuario.get().getSenha().equals(senha)) {
 			throw new ErroAutenticar("Senha invalida");
 		}
-		
 		
 		return usuario.get();
 	}

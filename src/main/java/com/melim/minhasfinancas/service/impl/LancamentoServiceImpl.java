@@ -66,7 +66,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 					.withIgnoreCase()
 					.withStringMatcher(StringMatcher.CONTAINING)
 				);
-		return repository.findAll();
+		return repository.findAll(example);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 		if(lancamento.getDescricao()==null || lancamento.getDescricao().trim().equals("")) {
 			throw new RegraNegocioException("Informe uma DESCRIÇÃO válida.");
 		}
-		if(lancamento.getMes()==null || lancamento.getMes()<=1 || lancamento.getMes()>=12) {
+		if(lancamento.getMes()==null || lancamento.getMes()<1 || lancamento.getMes()>12) {
 			throw new RegraNegocioException("Informe um MÊS válido.");
 		}
 		if(lancamento.getAno()==null || lancamento.getAno().toString().length()!=4) {
@@ -111,8 +111,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	@Transactional(readOnly = true)
 	public BigDecimal obterSaldoPorUsuario(Integer id) {
-		BigDecimal receita=repository.obterSaldoPorTipoLancamentoEUsuario(id,TipoLancamento.RECEITA,StatusLancamento.EFETIVADO);
-		BigDecimal despesa=repository.obterSaldoPorTipoLancamentoEUsuario(id,TipoLancamento.DESPESA,StatusLancamento.EFETIVADO);
+		BigDecimal receita=repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(id,TipoLancamento.RECEITA,StatusLancamento.EFETIVADO);
+		BigDecimal despesa=repository.obterSaldoPorTipoLancamentoEUsuarioEStatus(id,TipoLancamento.DESPESA,StatusLancamento.EFETIVADO);
 		
 		if(receita==null) {
 			receita=BigDecimal.ZERO;

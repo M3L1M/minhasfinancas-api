@@ -66,7 +66,6 @@ public class LancamentoResource {
 			lancamentoFiltro.setUsuario(usuario.get());
 		}
 		List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
-
 		return ResponseEntity.ok(lancamentos);
 
 	}
@@ -75,14 +74,18 @@ public class LancamentoResource {
 	public ResponseEntity salvar(@RequestBody LancamentoDTO dto) {
 		try {
 			Lancamento entidade = converter(dto);
-
 			entidade = service.salvar(entidade);
-
 			return new ResponseEntity(entidade, HttpStatus.CREATED);
-
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+	
+	@GetMapping("{id}")
+	public ResponseEntity obterLancamento(@PathVariable("id") Integer id) {
+		return service.obterPorId(id).map(lancamento -> new ResponseEntity(converter(lancamento),HttpStatus.OK))
+									 .orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
+		
 	}
 
 	@PutMapping("{id}")
@@ -139,11 +142,16 @@ public class LancamentoResource {
 	
 
 	private LancamentoDTO converter(Lancamento lancamento) {
-		return LancamentoDTO.builder().id(lancamento.getId()).descricao(lancamento.getDescricao())
-				.valor(lancamento.getValor()).mes(lancamento.getMes()).ano(lancamento.getAno())
-				.statusLancamento(lancamento.getStatusLancamento().name())
-				.tipoLancamento(lancamento.getTipoLancamento().name()).idUsuario(lancamento.getUsuario().getId())
-				.build();
+		return LancamentoDTO.builder()
+					.id(lancamento.getId())
+					.descricao(lancamento.getDescricao())
+					.valor(lancamento.getValor())
+					.mes(lancamento.getMes())
+					.ano(lancamento.getAno())
+					.statusLancamento(lancamento.getStatusLancamento().name())
+					.tipoLancamento(lancamento.getTipoLancamento().name())
+					.idUsuario(lancamento.getUsuario().getId())
+					.build();
 	}
 	
 	

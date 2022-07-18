@@ -14,7 +14,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Integer>
 	@Query(value = 
 			"SELECT SUM(l.valor) FROM Lancamento l JOIN l.usuario u "
 			+ "WHERE u.id =:idUsuario AND l.tipoLancamento =:tipo AND l.statusLancamento =:status GROUP BY u")
-	BigDecimal obterSaldoPorTipoLancamentoEUsuario
+	BigDecimal obterSaldoPorTipoLancamentoEUsuarioEStatus
 		   (@Param("idUsuario") Integer idUsuario,
 			@Param("tipo") TipoLancamento tipo,
 			@Param("status") StatusLancamento status);
